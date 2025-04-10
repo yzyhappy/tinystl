@@ -82,8 +82,16 @@ private:
 
 class test2 : test
 {
+	public:
 	test2(int num): test(num)
 	{
+	}
+
+	test2(const test2& t) = default;
+	test2(const test2&& t) = delete;
+
+	void check(const test2& t) {
+		std::cout << "yes" << std::endl;
 	}
 };
 
@@ -110,5 +118,12 @@ int main()
 	// deleter实际上就是一个仿函数
 	std::unique_ptr<test, deleter> t(new test(2), deleter());
 	t->out();
+
+
+	auto t2 = test2(2);
+	test2 t22 = t2;
+	//test2 t22 = std::move(t2);
+	t22.check(std::move(t2));
+
 	return 0;
 }
