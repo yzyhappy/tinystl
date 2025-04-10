@@ -34,6 +34,13 @@ TEST(TINY_STL, vector) {
     std::cout << vv.size() << " " << vv.capacity() << std::endl;
     Vector<test1> vvvv = vv;
     Vector<test1> vvv = std::move(vv);
-    
+
+    vv[0] = test1(1);
+    vv[1] = test1(2);
+
+    auto b = vv.begin();
+	std::cout << b->p() << std::endl;
+    auto n_b = vv.erase(b);
+    std::cout << "erase b: " << n_b->p() << std::endl;
 
 }

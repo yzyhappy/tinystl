@@ -102,7 +102,7 @@ public:
         if (size <= _capacity) {
             return ;
         }
-        _capacity = size;ß
+        _capacity = size;
         // 扩容然后复制过去
         // 深拷贝
         auto _n_place = static_cast<T*>(malloc(size * sizeof(T)));
@@ -139,10 +139,34 @@ public:
 
     template<class... Args>
     void emplace_back(Args... args) {
-        reserver(_size+1);
-        
+        reserve(_size+1);
+        new (_place + _size) T(std::forward<Args>(args)...);
     }
 
+    void pop_back()
+	{
+        _size--;
+		_place[_size].~T();
+    }
+
+    T* erase(T *_p)
+    {
+        auto _nptr = _p;
+        for (; _p < _place + _size; _p++)
+        {
+			*_p = std::move(*(_p + 1));
+        }
+		_size--;
+		_place[_size].~T();
+		return _nptr;    
+    }
+
+	~Vector()
+    {
+	    // 析构函数自定义去处理了指针类型的话，一定要再多写拷贝构造/拷贝运算符
+        // 否则就是浅拷贝，析构两个对象会造成double free
+
+    }
     
 
 private:
